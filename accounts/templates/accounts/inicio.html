@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inicio | Pasajes Bus
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+
+  {% if user.is_authenticated %}
+
+
+  <!-- ==================================================
+       BIENVENIDA
+  =================================================== -->
+
+  <div class="mb-5">
+
+    <h1>
+      Bienvenido,
+      {{ user.first_name|default:user.username }}
+    </h1>
+
+    <p class="text-muted fs-5">
+      Sesión iniciada como
+      <strong>{{ user.get_role_display }}</strong>.
+    </p>
+
+  </div>
+
+
+  <!-- ==================================================
+       MENÚ PASAJERO
+  =================================================== -->
+
+  {% if user.role == "PASAJERO" %}
+
+  <h3 class="mb-4">
+    ¿Qué deseas hacer?
+  </h3>
+
+
+  <div class="row g-4">
+
+
+    <!-- BUSCAR PASAJES -->
+
+    <div class="col-md-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body p-4">
+
+          <h4>
+            Buscar pasajes
+          </h4>
+
+          <p class="text-muted">
+            Busca viajes disponibles por
+            origen, destino y fecha.
+          </p>
+
+          <a href="{% url 'buscar_pasajes' %}" class="btn btn-primary">
+            Buscar viaje
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- MI CARRO -->
+
+    <div class="col-md-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body p-4">
+
+          <h4>
+            Mi carro
+          </h4>
+
+          <p class="text-muted">
+            Revisa los pasajes que agregaste
+            antes de realizar el pago.
+          </p>
+
+          <a href="{% url 'ver_carro' %}" class="btn btn-outline-primary">
+            Ver carro
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- MIS BOLETOS -->
+
+    <div class="col-md-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body p-4">
+
+          <h4>
+            Mis boletos
+          </h4>
+
+          <p class="text-muted">
+            Consulta tus pasajes comprados
+            y sus códigos de boleto.
+          </p>
+
+          <a href="{% url 'mis_boletos_web' %}" class="btn btn-outline-primary">
+            Ver mis boletos
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <!-- ==================================================
+       MENÚ ADMINISTRADOR DE FLOTA
+  =================================================== -->
+
+  {% elif user.role == "ADMIN_FLOTA" %}
+
+
+  <div class="mb-4">
+
+    <h3 class="mb-1">
+      Administración de Flota
+    </h3>
+
+    <p class="text-muted mb-0">
+      Gestiona la información necesaria
+      para la operación de los servicios.
+    </p>
+
+  </div>
+
+
+  <div class="row g-4">
+
+
+    <!-- VALIDAR BOLETOS -->
+
+    <div class="col-md-6 col-lg-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <h4>
+            Validar boletos
+          </h4>
+
+          <p class="text-muted">
+            Consulta y valida los boletos de los
+            pasajeros antes de abordar el servicio.
+          </p>
+
+          <a href="{% url 'validar_boleto' %}" class="btn btn-success">
+            Validar boleto
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- DOCUMENTACIÓN API -->
+
+    <div class="col-md-6 col-lg-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <h4>
+            Documentación API
+          </h4>
+
+          <p class="text-muted">
+            Consulta la documentación de los endpoints
+            disponibles en la API del sistema.
+          </p>
+
+          <a href="{% url 'swagger-ui' %}" class="btn btn-dark">
+            Ver documentación
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- CIUDADES -->
+
+    <div class="col-md-6 col-lg-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <h4>
+            Ciudades
+          </h4>
+
+          <p class="text-muted">
+            Gestiona las ciudades disponibles.
+          </p>
+
+          <a href="{% url 'ciudad_lista' %}" class="btn btn-primary">
+            Administrar
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- TERMINALES -->
+
+    <div class="col-md-6 col-lg-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <h4>
+            Terminales
+          </h4>
+
+          <p class="text-muted">
+            Gestiona los terminales asociados
+            a cada ciudad.
+          </p>
+
+          <a href="{% url 'terminal_lista' %}" class="btn btn-primary">
+            Administrar
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- RUTAS -->
+
+    <div class="col-md-6 col-lg-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <h4>
+            Rutas
+          </h4>
+
+          <p class="text-muted">
+            Configura los recorridos entre
+            terminales.
+          </p>
+
+          <a href="{% url 'ruta_lista' %}" class="btn btn-primary">
+            Administrar
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- BUSES -->
+
+    <div class="col-md-6 col-lg-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <h4>
+            Buses
+          </h4>
+
+          <p class="text-muted">
+            Registra y administra los buses
+            de la flota.
+          </p>
+
+          <a href="{% url 'bus_lista' %}" class="btn btn-primary">
+            Administrar
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ASIENTOS -->
+
+    <div class="col-md-6 col-lg-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <h4>
+            Asientos
+          </h4>
+
+          <p class="text-muted">
+            Configura los asientos y su tipo
+            para cada bus.
+          </p>
+
+          <a href="{% url 'asiento_lista' %}" class="btn btn-primary">
+            Administrar
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- SERVICIOS -->
+
+    <div class="col-md-6 col-lg-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <h4>
+            Servicios
+          </h4>
+
+          <p class="text-muted">
+            Programa los viajes indicando
+            ruta, bus y fecha de salida.
+          </p>
+
+          <a href="{% url 'servicio_lista' %}" class="btn btn-primary">
+            Administrar
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ASIENTOS POR SERVICIO -->
+
+    <div class="col-md-6 col-lg-4">
+
+      <div class="card shadow-sm h-100">
+
+        <div class="card-body">
+
+          <h4>
+            Asientos por servicio
+          </h4>
+
+          <p class="text-muted">
+            Define tarifas y disponibilidad
+            de los asientos de cada viaje.
+          </p>
+
+          <a href="{% url 'asiento_servicio_lista' %}" class="btn btn-primary">
+            Administrar
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  {% endif %}
+
+
+  {% else %}
+
+
+  <!-- ==================================================
+       USUARIO SIN SESIÓN
+  =================================================== -->
+
+  <div class="row justify-content-center">
+
+    <div class="col-lg-7">
+
+      <div class="card shadow-sm">
+
+        <div class="card-body p-5 text-center">
+
+          <h1 class="mb-3">
+            Pasajes Bus
+          </h1>
+
+          <p class="text-muted fs-5">
+            Sistema de reservas de pasajes
+            de buses interurbanos.
+          </p>
+
+
+          <div class="mt-4">
+
+            <a href="{% url 'login' %}" class="btn btn-primary me-2">
+              Iniciar sesión
+            </a>
+
+            <a href="{% url 'registro' %}" class="btn btn-outline-primary">
+              Crear cuenta
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  {% endif %}
+
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,505 @@
+{% extends "base.html" %}
+
+{% block title %}Validar boleto | Pasajes Bus{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+  <div class="col-lg-8">
+
+    <!-- ================================================== -->
+    <!-- ENCABEZADO -->
+    <!-- ================================================== -->
+
+    <div class="mb-4">
+
+      <h1 class="h2">
+        Validar boleto
+      </h1>
+
+      <p class="text-muted">
+        Ingresa el código del boleto para comprobar
+        su información y estado.
+      </p>
+
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- FORMULARIO DE VALIDACIÓN -->
+    <!-- ================================================== -->
+
+    <div class="card shadow-sm mb-4">
+
+      <div class="card-body">
+
+        <form method="post">
+
+          {% csrf_token %}
+
+          <label for="codigo" class="form-label">
+            Código del boleto
+          </label>
+
+          <div class="input-group">
+
+            <input type="text" name="codigo" id="codigo" class="form-control" value="{{ codigo }}"
+              placeholder="Ingresa el código UUID del boleto" required>
+
+            <button type="submit" class="btn btn-primary">
+              Validar boleto
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- RESULTADO DE LA BÚSQUEDA -->
+    <!-- ================================================== -->
+
+    {% if buscado %}
+
+    {% if boleto %}
+
+
+    <!-- ========================================== -->
+    <!-- ESTADO DEL BOLETO -->
+    <!-- ========================================== -->
+
+    {% if boleto.utilizado %}
+
+    <div class="alert alert-warning">
+
+      <h4 class="alert-heading">
+        Boleto utilizado
+      </h4>
+
+      <p class="mb-0">
+        Este boleto ya fue utilizado.
+      </p>
+
+      {% if boleto.fecha_utilizacion %}
+
+      <div class="mt-2">
+
+        <strong>
+          Fecha de utilización:
+        </strong>
+
+        {{ boleto.fecha_utilizacion|date:"d/m/Y H:i" }}
+
+      </div>
+
+      {% endif %}
+
+    </div>
+
+    {% else %}
+
+    <div class="alert alert-success">
+
+      <h4 class="alert-heading">
+        ✓ Boleto válido
+      </h4>
+
+      <p class="mb-0">
+        El boleto existe y todavía no ha sido utilizado.
+      </p>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ========================================== -->
+    <!-- INFORMACIÓN DEL BOLETO -->
+    <!-- ========================================== -->
+
+    <div class="card shadow-sm">
+
+      <div class="card-header bg-white">
+
+        <strong>
+          Información del boleto
+        </strong>
+
+      </div>
+
+
+      <div class="card-body">
+
+        <div class="row g-4">
+
+
+          <!-- CÓDIGO -->
+
+          <div class="col-12">
+
+            <strong>
+              Código del boleto
+            </strong>
+
+            <div class="font-monospace mt-1">
+              {{ boleto.codigo }}
+            </div>
+
+          </div>
+
+
+          <!-- PASAJERO -->
+
+          <div class="col-md-6">
+
+            <strong>
+              Pasajero
+            </strong>
+
+            <div>
+              {{ boleto.detalle_venta.nombre_ocupante }}
+            </div>
+
+          </div>
+
+
+          <!-- DOCUMENTO -->
+
+          <div class="col-md-6">
+
+            <strong>
+              Documento
+            </strong>
+
+            <div>
+              {{ boleto.detalle_venta.documento_ocupante }}
+            </div>
+
+          </div>
+
+
+          <!-- ORIGEN -->
+
+          <div class="col-md-6">
+
+            <strong>
+              Origen
+            </strong>
+
+            <div>
+              {{ boleto.detalle_venta.asiento_servicio.servicio.ruta.terminal_origen.ciudad.nombre }}
+            </div>
+
+            <small class="text-muted">
+              {{ boleto.detalle_venta.asiento_servicio.servicio.ruta.terminal_origen.nombre }}
+            </small>
+
+          </div>
+
+
+          <!-- DESTINO -->
+
+          <div class="col-md-6">
+
+            <strong>
+              Destino
+            </strong>
+
+            <div>
+              {{ boleto.detalle_venta.asiento_servicio.servicio.ruta.terminal_destino.ciudad.nombre }}
+            </div>
+
+            <small class="text-muted">
+              {{ boleto.detalle_venta.asiento_servicio.servicio.ruta.terminal_destino.nombre }}
+            </small>
+
+          </div>
+
+
+          <!-- FECHA -->
+
+          <div class="col-md-4">
+
+            <strong>
+              Fecha
+            </strong>
+
+            <div>
+              {{ boleto.detalle_venta.asiento_servicio.servicio.fecha_hora_salida|date:"d/m/Y" }}
+            </div>
+
+          </div>
+
+
+          <!-- HORA -->
+
+          <div class="col-md-4">
+
+            <strong>
+              Hora
+            </strong>
+
+            <div>
+              {{ boleto.detalle_venta.asiento_servicio.servicio.fecha_hora_salida|date:"H:i" }}
+            </div>
+
+          </div>
+
+
+          <!-- BUS -->
+
+          <div class="col-md-4">
+
+            <strong>
+              Bus
+            </strong>
+
+            <div>
+              {{ boleto.detalle_venta.asiento_servicio.servicio.bus.numero_bus }}
+            </div>
+
+          </div>
+
+
+          <!-- ASIENTO -->
+
+          <div class="col-md-4">
+
+            <strong>
+              Asiento
+            </strong>
+
+            <div>
+              {{ boleto.detalle_venta.asiento_servicio.asiento.numero }}
+            </div>
+
+          </div>
+
+
+          <!-- TIPO -->
+
+          <div class="col-md-4">
+
+            <strong>
+              Tipo
+            </strong>
+
+            <div>
+              {{ boleto.detalle_venta.asiento_servicio.asiento.get_tipo_display }}
+            </div>
+
+          </div>
+
+
+          <!-- PRECIO -->
+
+          <div class="col-md-4">
+
+            <strong>
+              Precio
+            </strong>
+
+            <div>
+              ${{ boleto.detalle_venta.precio|floatformat:0 }}
+            </div>
+
+          </div>
+
+
+          <!-- ESTADO DE COMPRA -->
+
+          <div class="col-md-6">
+
+            <strong>
+              Estado de compra
+            </strong>
+
+            <div class="mt-1">
+
+              {% if boleto.detalle_venta.venta.estado == "PAGADO" %}
+
+              <span class="badge bg-success">
+                Pagado
+              </span>
+
+              {% elif boleto.detalle_venta.venta.estado == "COMPLETADO" %}
+
+              <span class="badge bg-success">
+                Completado
+              </span>
+
+              {% elif boleto.detalle_venta.venta.estado == "CANCELADO" %}
+
+              <span class="badge bg-danger">
+                Cancelado
+              </span>
+
+              {% else %}
+
+              <span class="badge bg-warning text-dark">
+                {{ boleto.detalle_venta.venta.get_estado_display }}
+              </span>
+
+              {% endif %}
+
+            </div>
+
+          </div>
+
+
+          <!-- FECHA DE EMISIÓN -->
+
+          <div class="col-md-6">
+
+            <strong>
+              Fecha de emisión
+            </strong>
+
+            <div>
+              {{ boleto.fecha_emision|date:"d/m/Y H:i" }}
+            </div>
+
+          </div>
+
+
+          <!-- ESTADO DEL BOLETO -->
+
+          <div class="col-md-6">
+
+            <strong>
+              Estado del boleto
+            </strong>
+
+            <div class="mt-1">
+
+              {% if boleto.utilizado %}
+
+              <span class="badge bg-warning text-dark">
+                Utilizado
+              </span>
+
+              {% else %}
+
+              <span class="badge bg-success">
+                Disponible
+              </span>
+
+              {% endif %}
+
+            </div>
+
+          </div>
+
+
+          <!-- FECHA DE UTILIZACIÓN -->
+
+          {% if boleto.utilizado %}
+
+          <div class="col-md-6">
+
+            <strong>
+              Fecha de utilización
+            </strong>
+
+            <div>
+              {{ boleto.fecha_utilizacion|date:"d/m/Y H:i" }}
+            </div>
+
+          </div>
+
+          {% endif %}
+
+
+        </div>
+
+
+        <!-- ================================== -->
+        <!-- CONFIRMAR USO -->
+        <!-- ================================== -->
+
+        {% if not boleto.utilizado %}
+
+        <hr class="my-4">
+
+
+        {% if boleto.detalle_venta.venta.estado == "PAGADO" or boleto.detalle_venta.venta.estado == "COMPLETADO" %}
+
+        <div class="alert alert-info">
+
+          Verifica los datos del pasajero antes
+          de confirmar el uso del boleto.
+
+        </div>
+
+
+        <form method="post">
+
+          {% csrf_token %}
+
+          <input type="hidden" name="codigo" value="{{ boleto.codigo }}">
+
+          <input type="hidden" name="accion" value="usar">
+
+          <button type="submit" class="btn btn-success btn-lg"
+            onclick="return confirm('¿Confirmas que este pasajero utilizará el boleto?');">
+            Confirmar uso del boleto
+          </button>
+
+        </form>
+
+
+        {% else %}
+
+        <div class="alert alert-danger mb-0">
+
+          Este boleto no puede utilizarse porque
+          la compra no se encuentra pagada.
+
+        </div>
+
+        {% endif %}
+
+        {% endif %}
+
+
+      </div>
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- ========================================== -->
+    <!-- BOLETO NO ENCONTRADO -->
+    <!-- ========================================== -->
+
+    <div class="alert alert-danger">
+
+      <h4 class="alert-heading">
+        ✕ Boleto no encontrado
+      </h4>
+
+      <p class="mb-0">
+        No existe un boleto registrado
+        con el código ingresado.
+      </p>
+
+    </div>
+
+
+    {% endif %}
+
+    {% endif %}
+
+
+  </div>
+
+</div>
+
+{% endblock %}

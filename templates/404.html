@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Página no encontrada | Pasajes Bus
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+  <div class="row justify-content-center">
+
+    <div class="col-lg-7">
+
+      <div class="card shadow-sm text-center">
+
+        <div class="card-body py-5 px-4">
+
+          <div class="fw-bold text-primary mb-2" style="font-size: 80px; line-height: 1;">
+            404
+          </div>
+
+          <h1 class="h2 mb-3">
+            Página no encontrada
+          </h1>
+
+          <p class="text-muted mb-4">
+            La página que estás buscando no existe,
+            fue eliminada o la dirección ingresada
+            no es correcta.
+          </p>
+
+
+          {% if user.is_authenticated %}
+
+          {% if user.role == "PASAJERO" %}
+
+          <a href="{% url 'buscar_pasajes' %}" class="btn btn-primary">
+            Buscar pasajes
+          </a>
+
+          {% else %}
+
+          <a href="{% url 'inicio' %}" class="btn btn-primary">
+            Volver al inicio
+          </a>
+
+          {% endif %}
+
+          {% else %}
+
+          <a href="{% url 'inicio' %}" class="btn btn-primary">
+            Volver al inicio
+          </a>
+
+          {% endif %}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Acceso denegado | Pasajes Bus{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+  <div class="row justify-content-center">
+
+    <div class="col-lg-7">
+
+      <div class="card shadow-sm text-center">
+
+        <div class="card-body py-5 px-4">
+
+          <div class="display-1 fw-bold text-danger mb-3">
+            403
+          </div>
+
+          <h1 class="h2 mb-3">
+            Acceso denegado
+          </h1>
+
+          <p class="text-muted mb-4">
+            No tienes permisos para acceder a esta sección.
+          </p>
+
+          <div class="alert alert-warning">
+
+            La documentación de la API está disponible
+            únicamente para usuarios con rol
+            <strong>Administrador de Flota</strong>.
+
+          </div>
+
+          <a href="{% url 'inicio' %}" class="btn btn-primary mt-3">
+
+            Volver al inicio
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}

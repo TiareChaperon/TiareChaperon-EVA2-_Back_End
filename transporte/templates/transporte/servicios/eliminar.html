@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Eliminar servicio | Pasajes Bus</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+  <div class="container py-5">
+
+    <div class="row justify-content-center">
+
+      <div class="col-md-8 col-lg-7">
+
+        <div class="card shadow-sm">
+
+          <div class="card-body p-4">
+
+            <!-- ==============================
+                             CONFIRMACIÓN
+                        =============================== -->
+
+            <h1 class="h3 mb-3">
+              Eliminar servicio
+            </h1>
+
+            <p>
+              ¿Estás seguro de que deseas eliminar
+              este servicio?
+            </p>
+
+
+            <!-- DATOS DEL SERVICIO -->
+
+            <div class="card bg-light mb-3">
+
+              <div class="card-body">
+
+                <p class="mb-2">
+                  <strong>Origen:</strong>
+
+                  {{ servicio.ruta.terminal_origen.ciudad.nombre }}
+
+                  -
+
+                  {{ servicio.ruta.terminal_origen.nombre }}
+                </p>
+
+                <p class="mb-2">
+                  <strong>Destino:</strong>
+
+                  {{ servicio.ruta.terminal_destino.ciudad.nombre }}
+
+                  -
+
+                  {{ servicio.ruta.terminal_destino.nombre }}
+                </p>
+
+                <p class="mb-2">
+                  <strong>Bus:</strong>
+
+                  {{ servicio.bus.numero_bus }}
+                  ({{ servicio.bus.patente }})
+                </p>
+
+                <p class="mb-0">
+                  <strong>Salida:</strong>
+
+                  {{ servicio.fecha_hora_salida|date:"d/m/Y H:i" }}
+                </p>
+
+              </div>
+
+            </div>
+
+            <div class="alert alert-warning">
+              Esta acción no se puede deshacer.
+            </div>
+
+
+            <!-- ==============================
+                             FORMULARIO DE ELIMINACIÓN
+                        =============================== -->
+
+            <form method="post">
+
+              {% csrf_token %}
+
+              <button type="submit" class="btn btn-danger">
+                Sí, eliminar
+              </button>
+
+              <a href="{% url 'servicio_lista' %}" class="btn btn-outline-secondary">
+                Cancelar
+              </a>
+
+            </form>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>

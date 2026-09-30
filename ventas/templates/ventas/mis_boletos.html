@@ -1,0 +1,386 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Mis Boletos | Pasajes Bus
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+  <!-- ==================================================
+         ENCABEZADO
+    =================================================== -->
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+      <h1>
+        Mis boletos
+      </h1>
+
+      <p class="text-muted mb-0">
+        Consulta los pasajes que has comprado.
+      </p>
+
+    </div>
+
+
+    <a href="{% url 'buscar_pasajes' %}" class="btn btn-primary">
+      Buscar otro viaje
+    </a>
+
+  </div>
+
+
+  <!-- ==================================================
+         VENTAS
+    =================================================== -->
+
+  {% if ventas %}
+
+  {% for venta in ventas %}
+
+  <div class="card shadow-sm mb-4">
+
+
+    <!-- ==========================================
+                     CABECERA DE LA COMPRA
+                =========================================== -->
+
+    <div class="card-header bg-white">
+
+      <div class="row align-items-center g-3">
+
+
+        <!-- NÚMERO DE COMPRA -->
+
+        <div class="col-md-3">
+
+          <strong>
+            Compra #{{ venta.id }}
+          </strong>
+
+        </div>
+
+
+        <!-- ESTADO -->
+
+        <div class="col-md-3">
+
+          {% if venta.estado == "PAGADO" %}
+
+          <span class="badge text-bg-success">
+            {{ venta.get_estado_display }}
+          </span>
+
+          {% elif venta.estado == "COMPLETADO" %}
+
+          <span class="badge text-bg-primary">
+            {{ venta.get_estado_display }}
+          </span>
+
+          {% else %}
+
+          <span class="badge text-bg-secondary">
+            {{ venta.get_estado_display }}
+          </span>
+
+          {% endif %}
+
+        </div>
+
+
+        <!-- FECHA DE COMPRA -->
+
+        <div class="col-md-3">
+
+          <span class="text-muted">
+
+            {{ venta.fecha_creacion|date:"d/m/Y H:i" }}
+
+          </span>
+
+        </div>
+
+
+        <!-- TOTAL -->
+
+        <div class="col-md-3 text-md-end">
+
+          <strong>
+
+            Total:
+            ${{ venta.total|floatformat:0 }}
+
+          </strong>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+    <!-- ==========================================
+                     BOLETOS DE LA COMPRA
+                =========================================== -->
+
+    <div class="card-body">
+
+
+      {% for detalle in venta.detalles.all %}
+
+      <div class="border rounded p-3 mb-3">
+
+        <div class="row">
+
+
+          <!-- VIAJE -->
+
+          <div class="col-lg-4 mb-3">
+
+            <strong>
+              Viaje
+            </strong>
+
+            <div class="fs-5">
+
+              {{ detalle.asiento_servicio.servicio.ruta.terminal_origen.ciudad.nombre }}
+
+              →
+
+              {{ detalle.asiento_servicio.servicio.ruta.terminal_destino.ciudad.nombre }}
+
+            </div>
+
+
+            <div class="small text-muted">
+
+              {{ detalle.asiento_servicio.servicio.ruta.terminal_origen.nombre }}
+
+              →
+
+              {{ detalle.asiento_servicio.servicio.ruta.terminal_destino.nombre }}
+
+            </div>
+
+          </div>
+
+
+          <!-- FECHA -->
+
+          <div class="col-lg-2 mb-3">
+
+            <strong>
+              Fecha
+            </strong>
+
+            <div>
+
+              {{ detalle.asiento_servicio.servicio.fecha_hora_salida|date:"d/m/Y" }}
+
+            </div>
+
+
+            <div class="text-muted">
+
+              {{ detalle.asiento_servicio.servicio.fecha_hora_salida|date:"H:i" }}
+
+            </div>
+
+          </div>
+
+
+          <!-- BUS -->
+
+          <div class="col-lg-2 mb-3">
+
+            <strong>
+              Bus
+            </strong>
+
+            <div>
+
+              {{ detalle.asiento_servicio.servicio.bus.numero_bus }}
+
+            </div>
+
+          </div>
+
+
+          <!-- ASIENTO -->
+
+          <div class="col-lg-2 mb-3">
+
+            <strong>
+              Asiento
+            </strong>
+
+            <div>
+
+              {{ detalle.asiento_servicio.asiento.numero }}
+
+            </div>
+
+
+            <div class="small text-muted">
+
+              {{ detalle.asiento_servicio.asiento.get_tipo_display }}
+
+            </div>
+
+          </div>
+
+
+          <!-- PRECIO -->
+
+          <div class="col-lg-2 mb-3">
+
+            <strong>
+              Precio
+            </strong>
+
+            <div>
+
+              ${{ detalle.precio|floatformat:0 }}
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+
+        <hr>
+
+
+        <div class="row">
+
+
+          <!-- PASAJERO -->
+
+          <div class="col-md-4 mb-2">
+
+            <strong>
+              Pasajero
+            </strong>
+
+            <div>
+
+              {{ detalle.nombre_ocupante }}
+
+            </div>
+
+          </div>
+
+
+          <!-- DOCUMENTO -->
+
+          <div class="col-md-4 mb-2">
+
+            <strong>
+              Documento
+            </strong>
+
+            <div>
+
+              {{ detalle.documento_ocupante }}
+
+            </div>
+
+          </div>
+
+
+          <!-- CÓDIGO DEL BOLETO -->
+
+          <div class="col-md-4 mb-2">
+
+            <strong>
+              Código del boleto
+            </strong>
+
+            <div class="font-monospace small
+                                               bg-light border rounded p-2 mt-1">
+
+              {{ detalle.boleto.codigo }}
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      {% empty %}
+
+      <div class="alert alert-warning">
+
+        Esta compra no tiene boletos asociados.
+
+      </div>
+
+      {% endfor %}
+
+
+      <!-- ======================================
+                         VER DETALLE
+                    ======================================= -->
+
+      <a href="{% url 'compra_exitosa' venta.id %}" class="btn btn-outline-primary">
+        Ver detalle de compra
+      </a>
+
+
+    </div>
+
+  </div>
+
+  {% endfor %}
+
+
+  {% else %}
+
+
+  <!-- ==================================================
+             SIN BOLETOS
+        =================================================== -->
+
+  <div class="card shadow-sm text-center">
+
+    <div class="card-body py-5">
+
+      <h3>
+        Aún no tienes boletos
+      </h3>
+
+      <p class="text-muted">
+
+        Cuando realices una compra,
+        tus boletos aparecerán aquí.
+
+      </p>
+
+
+      <a href="{% url 'buscar_pasajes' %}" class="btn btn-primary">
+        Buscar pasajes
+      </a>
+
+    </div>
+
+  </div>
+
+
+  {% endif %}
+
+</div>
+
+{% endblock %}

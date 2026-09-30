@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Compra realizada | Pasajes Bus
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+
+  <!-- ==================================================
+         COMPRA EXITOSA
+    =================================================== -->
+
+  <div class="text-center mb-5">
+
+    <div class="d-inline-flex align-items-center justify-content-center
+                   rounded-circle bg-success text-white mb-3" style="width: 70px; height: 70px; font-size: 38px;">
+      ✓
+    </div>
+
+    <h1>
+      ¡Compra realizada!
+    </h1>
+
+    <p class="text-muted">
+      Tu pago fue procesado correctamente
+      y tus boletos fueron emitidos.
+    </p>
+
+  </div>
+
+
+  <!-- ==================================================
+         INFORMACIÓN DE LA VENTA
+    =================================================== -->
+
+  <div class="card shadow-sm mb-4">
+
+    <div class="card-body">
+
+      <div class="row">
+
+
+        <!-- NÚMERO DE COMPRA -->
+
+        <div class="col-md-4 mb-3">
+
+          <strong>
+            Número de compra
+          </strong>
+
+          <div>
+            #{{ venta.id }}
+          </div>
+
+        </div>
+
+
+        <!-- ESTADO -->
+
+        <div class="col-md-4 mb-3">
+
+          <strong>
+            Estado
+          </strong>
+
+          <div class="mt-1">
+
+            <span class="badge text-bg-success">
+              {{ venta.get_estado_display }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- TOTAL -->
+
+        <div class="col-md-4 mb-3">
+
+          <strong>
+            Total pagado
+          </strong>
+
+          <div class="fs-5">
+            ${{ venta.total|floatformat:0 }}
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==================================================
+         BOLETOS
+    =================================================== -->
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2 class="mb-0">
+      Boletos emitidos
+    </h2>
+
+    <span class="text-muted">
+      Compra #{{ venta.id }}
+    </span>
+
+  </div>
+
+
+  {% for detalle in venta.detalles.all %}
+
+  <div class="card shadow-sm mb-4">
+
+    <div class="card-body">
+
+
+      <div class="row">
+
+
+        <!-- VIAJE -->
+
+        <div class="col-md-6 mb-3">
+
+          <strong>
+            Viaje
+          </strong>
+
+          <div class="fs-5">
+
+            {{ detalle.asiento_servicio.servicio.ruta.terminal_origen.ciudad.nombre }}
+
+            →
+
+            {{ detalle.asiento_servicio.servicio.ruta.terminal_destino.ciudad.nombre }}
+
+          </div>
+
+
+          <div class="text-muted">
+
+            {{ detalle.asiento_servicio.servicio.ruta.terminal_origen.nombre }}
+
+            →
+
+            {{ detalle.asiento_servicio.servicio.ruta.terminal_destino.nombre }}
+
+          </div>
+
+        </div>
+
+
+        <!-- FECHA -->
+
+        <div class="col-md-3 mb-3">
+
+          <strong>
+            Fecha
+          </strong>
+
+          <div>
+            {{ detalle.asiento_servicio.servicio.fecha_hora_salida|date:"d/m/Y" }}
+          </div>
+
+          <div>
+            {{ detalle.asiento_servicio.servicio.fecha_hora_salida|date:"H:i" }}
+          </div>
+
+        </div>
+
+
+        <!-- BUS -->
+
+        <div class="col-md-3 mb-3">
+
+          <strong>
+            Bus
+          </strong>
+
+          <div>
+            {{ detalle.asiento_servicio.servicio.bus.numero_bus }}
+          </div>
+
+        </div>
+
+
+        <!-- PASAJERO -->
+
+        <div class="col-md-4 mb-3">
+
+          <strong>
+            Pasajero
+          </strong>
+
+          <div>
+            {{ detalle.nombre_ocupante }}
+          </div>
+
+        </div>
+
+
+        <!-- DOCUMENTO -->
+
+        <div class="col-md-4 mb-3">
+
+          <strong>
+            Documento
+          </strong>
+
+          <div>
+            {{ detalle.documento_ocupante }}
+          </div>
+
+        </div>
+
+
+        <!-- ASIENTO -->
+
+        <div class="col-md-4 mb-3">
+
+          <strong>
+            Asiento
+          </strong>
+
+          <div>
+
+            {{ detalle.asiento_servicio.asiento.numero }}
+
+            -
+
+            {{ detalle.asiento_servicio.asiento.get_tipo_display }}
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <hr>
+
+
+      <!-- ==================================================
+                     CÓDIGO DEL BOLETO
+                =================================================== -->
+
+      <div class="row align-items-center">
+
+
+        <div class="col-md-8 mb-3">
+
+          <strong>
+            Código del boleto
+          </strong>
+
+          <div class="font-monospace mt-1
+                                   bg-light border rounded p-2">
+            {{ detalle.boleto.codigo }}
+          </div>
+
+        </div>
+
+
+        <!-- PRECIO -->
+
+        <div class="col-md-4 mb-3">
+
+          <strong>
+            Precio
+          </strong>
+
+          <div class="fs-5">
+            ${{ detalle.precio|floatformat:0 }}
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+  {% empty %}
+
+  <div class="alert alert-warning">
+
+    No se encontraron boletos asociados
+    a esta compra.
+
+  </div>
+
+  {% endfor %}
+
+
+  <!-- ==================================================
+         BOTONES
+    =================================================== -->
+
+  <div class="d-flex gap-2 flex-wrap">
+
+    <a href="{% url 'mis_boletos_web' %}" class="btn btn-primary">
+      Ver mis boletos
+    </a>
+
+
+    <a href="{% url 'buscar_pasajes' %}" class="btn btn-outline-primary">
+      Buscar otro viaje
+    </a>
+
+
+    <a href="{% url 'inicio' %}" class="btn btn-outline-secondary">
+      Volver al inicio
+    </a>
+
+  </div>
+
+
+</div>
+
+{% endblock %}

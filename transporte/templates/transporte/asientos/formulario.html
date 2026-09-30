@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>{{ titulo }} | Pasajes Bus</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+  <div class="container py-5">
+
+    <div class="row justify-content-center">
+
+      <div class="col-md-7 col-lg-6">
+
+        <div class="card shadow-sm">
+
+          <div class="card-body p-4">
+
+            <!-- ==============================
+                             TÍTULO
+                        =============================== -->
+
+            <h1 class="h3 mb-4">
+              {{ titulo }}
+            </h1>
+
+
+            <!-- ==============================
+                             FORMULARIO
+                        =============================== -->
+
+            <form method="post">
+
+              {% csrf_token %}
+
+
+              <!-- ERRORES GENERALES -->
+
+              {% if form.non_field_errors %}
+
+              <div class="alert alert-danger">
+
+                {% for error in form.non_field_errors %}
+                <div>{{ error }}</div>
+                {% endfor %}
+
+              </div>
+
+              {% endif %}
+
+
+              <!-- BUS -->
+
+              <div class="mb-3">
+
+                <label for="{{ form.bus.id_for_label }}" class="form-label">
+                  {{ form.bus.label }}
+                </label>
+
+                {{ form.bus }}
+
+                {% if form.bus.errors %}
+                <div class="text-danger mt-1">
+                  {{ form.bus.errors }}
+                </div>
+                {% endif %}
+
+              </div>
+
+
+              <!-- NÚMERO DE ASIENTO -->
+
+              <div class="mb-3">
+
+                <label for="{{ form.numero.id_for_label }}" class="form-label">
+                  {{ form.numero.label }}
+                </label>
+
+                {{ form.numero }}
+
+                {% if form.numero.errors %}
+                <div class="text-danger mt-1">
+                  {{ form.numero.errors }}
+                </div>
+                {% endif %}
+
+              </div>
+
+
+              <!-- TIPO DE ASIENTO -->
+
+              <div class="mb-4">
+
+                <label for="{{ form.tipo.id_for_label }}" class="form-label">
+                  {{ form.tipo.label }}
+                </label>
+
+                {{ form.tipo }}
+
+                {% if form.tipo.errors %}
+                <div class="text-danger mt-1">
+                  {{ form.tipo.errors }}
+                </div>
+                {% endif %}
+
+              </div>
+
+
+              <!-- BOTONES -->
+
+              <div class="d-flex gap-2">
+
+                <button type="submit" class="btn btn-primary">
+                  Guardar
+                </button>
+
+                <a href="{% url 'asiento_lista' %}" class="btn btn-outline-secondary">
+                  Cancelar
+                </a>
+
+              </div>
+
+            </form>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Buscar pasajes | Pasajes Bus
+{% endblock %}
+
+
+{% block content %}
+
+<main class="container py-5">
+
+  <!-- ==================================================
+         ENCABEZADO
+    =================================================== -->
+
+  <div class="mb-4">
+
+    <h1 class="h3">
+      Buscar pasajes
+    </h1>
+
+    <p class="text-muted">
+      Selecciona el origen, destino y fecha
+      de tu viaje.
+    </p>
+
+  </div>
+
+
+  <!-- ==================================================
+         FORMULARIO DE BÚSQUEDA
+    =================================================== -->
+
+  <div class="card shadow-sm mb-5">
+
+    <div class="card-body">
+
+      <form method="get" action="{% url 'buscar_pasajes' %}">
+
+        <div class="row g-3">
+
+
+          <!-- ORIGEN -->
+
+          <div class="col-md-4">
+
+            <label for="origen" class="form-label">
+              Origen
+            </label>
+
+            <select name="origen" id="origen" class="form-select" required>
+
+              <option value="">
+                Selecciona una ciudad
+              </option>
+
+              {% for ciudad in ciudades %}
+
+              <option value="{{ ciudad.id }}">
+                {{ ciudad.nombre }}
+              </option>
+
+              {% endfor %}
+
+            </select>
+
+          </div>
+
+
+          <!-- DESTINO -->
+
+          <div class="col-md-4">
+
+            <label for="destino" class="form-label">
+              Destino
+            </label>
+
+            <select name="destino" id="destino" class="form-select" required>
+
+              <option value="">
+                Selecciona una ciudad
+              </option>
+
+              {% for ciudad in ciudades %}
+
+              <option value="{{ ciudad.id }}">
+                {{ ciudad.nombre }}
+              </option>
+
+              {% endfor %}
+
+            </select>
+
+          </div>
+
+
+          <!-- FECHA -->
+
+          <div class="col-md-4">
+
+            <label for="fecha" class="form-label">
+              Fecha de viaje
+            </label>
+
+            <input type="date" name="fecha" id="fecha" class="form-control" value="{{ fecha_seleccionada }}" required>
+
+          </div>
+
+        </div>
+
+
+        <!-- BOTÓN -->
+
+        <div class="mt-4">
+
+          <button type="submit" class="btn btn-primary">
+            Buscar pasajes
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==================================================
+         RESULTADOS
+    =================================================== -->
+
+  {% if busqueda_realizada %}
+
+  <h2 class="h4 mb-3">
+    Servicios encontrados
+  </h2>
+
+
+  {% if resultados %}
+
+  <div class="row g-3">
+
+    {% for resultado in resultados %}
+
+    <div class="col-12">
+
+      <div class="card shadow-sm">
+
+        <div class="card-body">
+
+          <div class="row align-items-center g-3">
+
+
+            <!-- RUTA -->
+
+            <div class="col-md-3">
+
+              <strong>
+
+                {{ resultado.servicio.ruta.terminal_origen.ciudad.nombre }}
+
+                →
+
+                {{ resultado.servicio.ruta.terminal_destino.ciudad.nombre }}
+
+              </strong>
+
+              <div class="text-muted small mt-1">
+
+                {{ resultado.servicio.ruta.terminal_origen.nombre }}
+
+                →
+
+                {{ resultado.servicio.ruta.terminal_destino.nombre }}
+
+              </div>
+
+            </div>
+
+
+            <!-- FECHA -->
+
+            <div class="col-md-2">
+
+              <strong>
+                Fecha
+              </strong>
+
+              <div>
+                {{ resultado.servicio.fecha_hora_salida|date:"d/m/Y" }}
+              </div>
+
+            </div>
+
+
+            <!-- HORA -->
+
+            <div class="col-md-2">
+
+              <strong>
+                Hora
+              </strong>
+
+              <div>
+                {{ resultado.servicio.fecha_hora_salida|date:"H:i" }}
+              </div>
+
+            </div>
+
+
+            <!-- BUS -->
+
+            <div class="col-md-2">
+
+              <strong>
+                Bus
+              </strong>
+
+              <div>
+                {{ resultado.servicio.bus.numero_bus }}
+              </div>
+
+            </div>
+
+
+            <!-- DISPONIBILIDAD -->
+
+            <div class="col-md-2">
+
+              <strong>
+                Disponibles
+              </strong>
+
+              <div class="mt-1">
+
+                {% if resultado.asientos_disponibles > 0 %}
+
+                <span class="badge bg-success">
+
+                  {{ resultado.asientos_disponibles }}
+                  asientos
+
+                </span>
+
+                {% else %}
+
+                <span class="badge bg-danger">
+                  Agotado
+                </span>
+
+                {% endif %}
+
+              </div>
+
+            </div>
+
+
+            <!-- ACCIÓN -->
+
+            <div class="col-md-1">
+
+              {% if resultado.asientos_disponibles > 0 %}
+
+              <a href="{% url 'seleccionar_asientos' resultado.servicio.id %}" class="btn btn-primary btn-sm">
+                Ver
+              </a>
+
+              {% else %}
+
+              <button type="button" class="btn btn-secondary btn-sm" disabled>
+                Ver
+              </button>
+
+              {% endif %}
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    {% endfor %}
+
+  </div>
+
+
+  {% else %}
+
+  <div class="alert alert-warning">
+
+    No se encontraron servicios para
+    el origen, destino y fecha seleccionados.
+
+  </div>
+
+  {% endif %}
+
+  {% endif %}
+
+</main>
+
+{% endblock %}

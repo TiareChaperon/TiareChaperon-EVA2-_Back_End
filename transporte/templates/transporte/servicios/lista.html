@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Servicios | Pasajes Bus</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+  <div class="container py-5">
+
+    <!-- ==============================
+             ENCABEZADO
+        =============================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+      <div>
+        <h1>Servicios</h1>
+
+        <p class="text-muted mb-0">
+          Administración de los viajes programados.
+        </p>
+      </div>
+
+      <a href="{% url 'servicio_crear' %}" class="btn btn-primary">
+        Nuevo servicio
+      </a>
+
+    </div>
+
+
+    <!-- ==============================
+             MENSAJES DEL SISTEMA
+        =============================== -->
+
+    {% if messages %}
+
+    {% for message in messages %}
+
+    <div class="alert alert-success">
+      {{ message }}
+    </div>
+
+    {% endfor %}
+
+    {% endif %}
+
+
+    <!-- ==============================
+             LISTADO DE SERVICIOS
+        =============================== -->
+
+    <div class="card shadow-sm">
+
+      <div class="card-body">
+
+        {% if servicios %}
+
+        <div class="table-responsive">
+
+          <table class="table table-hover align-middle">
+
+            <thead>
+
+              <tr>
+                <th>ID</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th>Bus</th>
+                <th>Salida</th>
+                <th>Estado</th>
+                <th class="text-end">
+                  Acciones
+                </th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {% for servicio in servicios %}
+
+              <tr>
+
+                <td>
+                  {{ servicio.id }}
+                </td>
+
+                <td>
+                  <strong>
+                    {{ servicio.ruta.terminal_origen.ciudad.nombre }}
+                  </strong>
+
+                  <br>
+
+                  <small class="text-muted">
+                    {{ servicio.ruta.terminal_origen.nombre }}
+                  </small>
+                </td>
+
+                <td>
+                  <strong>
+                    {{ servicio.ruta.terminal_destino.ciudad.nombre }}
+                  </strong>
+
+                  <br>
+
+                  <small class="text-muted">
+                    {{ servicio.ruta.terminal_destino.nombre }}
+                  </small>
+                </td>
+
+                <td>
+                  <strong>
+                    {{ servicio.bus.numero_bus }}
+                  </strong>
+
+                  <br>
+
+                  <small class="text-muted">
+                    {{ servicio.bus.patente }}
+                  </small>
+                </td>
+
+                <td>
+                  {{ servicio.fecha_hora_salida|date:"d/m/Y H:i" }}
+                </td>
+
+                <td>
+
+                  {% if servicio.activo %}
+
+                  <span class="badge bg-success">
+                    Activo
+                  </span>
+
+                  {% else %}
+
+                  <span class="badge bg-secondary">
+                    Inactivo
+                  </span>
+
+                  {% endif %}
+
+                </td>
+
+                <td class="text-end">
+
+                  <a href="{% url 'servicio_editar' servicio.id %}" class="btn btn-warning btn-sm">
+                    Editar
+                  </a>
+
+                  <a href="{% url 'servicio_eliminar' servicio.id %}" class="btn btn-danger btn-sm">
+                    Eliminar
+                  </a>
+
+                </td>
+
+              </tr>
+
+              {% endfor %}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="text-center py-4">
+
+          <p class="text-muted mb-0">
+            Todavía no existen servicios registrados.
+          </p>
+
+        </div>
+
+        {% endif %}
+
+      </div>
+
+    </div>
+
+
+    <!-- ==============================
+             NAVEGACIÓN
+        =============================== -->
+
+    <div class="mt-4 d-flex gap-2">
+
+      <a href="{% url 'asiento_lista' %}" class="btn btn-outline-primary">
+        Ver asientos
+      </a>
+
+      <a href="{% url 'inicio' %}" class="btn btn-outline-secondary">
+        Volver al inicio
+      </a>
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>

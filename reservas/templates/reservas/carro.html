@@ -1,0 +1,330 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Carro de Pasajes | Pasajes Bus
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+  <!-- ==================================================
+         ENCABEZADO
+    =================================================== -->
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+      <h1>
+        Carro de Pasajes
+      </h1>
+
+      <p class="text-muted mb-0">
+        Revisa tus pasajes antes de continuar con el pago.
+      </p>
+
+    </div>
+
+
+    <a href="{% url 'buscar_pasajes' %}" class="btn btn-outline-primary">
+      Buscar otro viaje
+    </a>
+
+  </div>
+
+
+  <!-- ==================================================
+         CARRO CON PASAJES
+    =================================================== -->
+
+  {% if items %}
+
+  <div class="card shadow-sm">
+
+    <div class="card-body">
+
+      <div class="table-responsive">
+
+        <table class="table table-hover align-middle">
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Viaje
+              </th>
+
+              <th>
+                Fecha
+              </th>
+
+              <th>
+                Bus
+              </th>
+
+              <th>
+                Asiento
+              </th>
+
+              <th>
+                Pasajero
+              </th>
+
+              <th>
+                Documento
+              </th>
+
+              <th class="text-end">
+                Precio
+              </th>
+
+              <th class="text-center">
+                Acción
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            {% for item in items %}
+
+            <tr>
+
+
+              <!-- VIAJE -->
+
+              <td>
+
+                <strong>
+
+                  {{ item.asiento_servicio.servicio.ruta.terminal_origen.ciudad.nombre }}
+
+                  →
+
+                  {{ item.asiento_servicio.servicio.ruta.terminal_destino.ciudad.nombre }}
+
+                </strong>
+
+
+                <div class="small text-muted">
+
+                  {{ item.asiento_servicio.servicio.ruta.terminal_origen.nombre }}
+
+                  →
+
+                  {{ item.asiento_servicio.servicio.ruta.terminal_destino.nombre }}
+
+                </div>
+
+              </td>
+
+
+              <!-- FECHA -->
+
+              <td>
+
+                {{ item.asiento_servicio.servicio.fecha_hora_salida|date:"d/m/Y" }}
+
+                <div class="small text-muted">
+
+                  {{ item.asiento_servicio.servicio.fecha_hora_salida|date:"H:i" }}
+
+                </div>
+
+              </td>
+
+
+              <!-- BUS -->
+
+              <td>
+
+                {{ item.asiento_servicio.servicio.bus.numero_bus }}
+
+              </td>
+
+
+              <!-- ASIENTO -->
+
+              <td>
+
+                <strong>
+
+                  {{ item.asiento_servicio.asiento.numero }}
+
+                </strong>
+
+                <div class="small text-muted">
+
+                  {{ item.asiento_servicio.asiento.get_tipo_display }}
+
+                </div>
+
+              </td>
+
+
+              <!-- PASAJERO -->
+
+              <td>
+
+                {{ item.nombre_ocupante }}
+
+              </td>
+
+
+              <!-- DOCUMENTO -->
+
+              <td>
+
+                {{ item.documento_ocupante }}
+
+              </td>
+
+
+              <!-- PRECIO -->
+
+              <td class="text-end">
+
+                <strong>
+
+                  ${{ item.asiento_servicio.tarifa|floatformat:0 }}
+
+                </strong>
+
+              </td>
+
+
+              <!-- ELIMINAR -->
+
+              <td class="text-center">
+
+                <form method="post" action="{% url 'eliminar_del_carro' item.id %}">
+
+                  {% csrf_token %}
+
+                  <button type="submit" class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm('¿Deseas eliminar este pasaje del carro?');">
+                    Eliminar
+                  </button>
+
+                </form>
+
+              </td>
+
+
+            </tr>
+
+            {% endfor %}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==================================================
+             TOTAL Y PAGO
+        =================================================== -->
+
+  <div class="row mt-4">
+
+    <div class="col-lg-5 ms-auto">
+
+      <div class="card shadow-sm">
+
+        <div class="card-body">
+
+
+          <div class="d-flex justify-content-between align-items-center">
+
+            <span class="fs-5">
+              Total
+            </span>
+
+            <strong class="fs-4">
+
+              ${{ total|floatformat:0 }}
+
+            </strong>
+
+          </div>
+
+
+          <hr>
+
+
+          <div class="alert alert-info small">
+
+            Los asientos se confirmarán
+            definitivamente al completar el pago.
+
+          </div>
+
+
+          <form method="post" action="{% url 'checkout_web' %}">
+
+            {% csrf_token %}
+
+            <button type="submit" class="btn btn-success btn-lg w-100"
+              onclick="return confirm('¿Deseas confirmar el pago de estos pasajes?');">
+              Confirmar pago
+            </button>
+
+          </form>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  {% else %}
+
+
+  <!-- ==================================================
+             CARRO VACÍO
+        =================================================== -->
+
+  <div class="card shadow-sm text-center">
+
+    <div class="card-body py-5">
+
+      <h3>
+        Tu carro está vacío
+      </h3>
+
+      <p class="text-muted">
+        Busca un viaje y selecciona un asiento
+        para comenzar.
+      </p>
+
+
+      <a href="{% url 'buscar_pasajes' %}" class="btn btn-primary">
+        Buscar pasajes
+      </a>
+
+    </div>
+
+  </div>
+
+
+  {% endif %}
+
+</div>
+
+{% endblock %}
